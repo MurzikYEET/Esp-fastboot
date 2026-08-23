@@ -7,6 +7,14 @@ def read(args:list,esptool,partitions):
     args.pop(0)
     command_to_run = [esptool,"read-flash",partitions[target_partition]["offset"],partitions[target_partition]["size"],target_binary]
     run(command_to_run)
+def use_local_table(path2table:str):
+    try:
+        with open(path2table,"r",encoding="utf-8") as input:
+            with open("partition_table.csv","w+",encoding="utf-8") as output:
+                output.write(input.read())
+    finally:
+        print("PASS!")
+
 #code methods
 def optimize_csv(string:str):
     output = {}

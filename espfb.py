@@ -15,8 +15,11 @@ def main():
         return
     match args[0]:
         case "about":print(const.ABOUT)
-        case "read":fnc.read(args,esptool,partitions)
         case "about_esptool":fnc.run([esptool,"version"])
+        case "flash":pass
+        case "wipe":pass 
+        case "read":fnc.read(args,esptool,partitions)
+        case "use-local-table":fnc.use_local_table(args[1])
         case _:print(const.UNKNOW_COMMANDS)
 
 if __name__ == "__main__":
