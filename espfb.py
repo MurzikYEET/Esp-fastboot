@@ -20,6 +20,7 @@ def main():
         case "wipe":pass 
         case "read":fnc.read(args,esptool,partitions)
         case "use-local-table":fnc.use_local_table(args[1])
+        case "use-esp-table":print("Command not ready, command has been added soon")
         case _:print(const.UNKNOW_COMMANDS)
 
 if __name__ == "__main__":
