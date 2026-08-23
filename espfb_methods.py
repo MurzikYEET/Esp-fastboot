@@ -3,9 +3,9 @@ import subprocess as sp
 def read(args:list,esptool,partitions):
     target_partition = args[1]
     target_binary = args[2]
-    args.pop(0)
-    args.pop(0)
+    remove_first_elements(args,3)
     command_to_run = [esptool,"read-flash",get_offset(partitions,target_partition),get_size(partitions,target_partition),target_binary]
+    #insert_args(command_to_run,args)
     run(command_to_run)
 def use_local_table(path2table:str):
     try:
@@ -14,6 +14,13 @@ def use_local_table(path2table:str):
                 output.write(input.read())
     finally:
         print("PASS!")
+def wipe(args:list,esptool,partitions):
+    target_offset = get_offset(partitions,args[1])
+    target_size = get_size(partitions,args[1])
+    remove_first_elements(args,2)
+    command_to_run = [esptool,"erase-region",target_offset,target_size]
+    #insert_args(command_to_run,args)
+    run(command_to_run)
 
 #code methods
 def optimize_csv(string:str):
@@ -38,7 +45,10 @@ def run(args:list,shell=True,**kwargs):
     sp.run(args,shell=shell,**kwargs)
 def get_size(part_table,part):return part_table[part]["size"]
 def get_offset(part_table,part):return part_table[part]["offset"]
-    
+def insert_args(list_:list,args):list_.insert(1,args)
+def remove_first_elements(target:list,count = 1):
+    for i in range(count):target.pop(0)
+
 if __name__ == "__main__":
     with open("partition_table.csv","r") as file:
         print(optimize_csv(file.read()))
