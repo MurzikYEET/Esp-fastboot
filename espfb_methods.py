@@ -5,7 +5,7 @@ def read(args:list,esptool,partitions):
     target_binary = args[2]
     args.pop(0)
     args.pop(0)
-    command_to_run = [esptool,"read-flash",partitions[target_partition]["offset"],partitions[target_partition]["size"],target_binary]
+    command_to_run = [esptool,"read-flash",get_offset(partitions,target_partition),get_size(partitions,target_partition),target_binary]
     run(command_to_run)
 def use_local_table(path2table:str):
     try:
@@ -36,6 +36,8 @@ def run(args:list,shell=True,**kwargs):
     for i in args:print(i,end=' ')
     print()
     sp.run(args,shell=shell,**kwargs)
+def get_size(part_table,part):return part_table[part]["size"]
+def get_offset(part_table,part):return part_table[part]["offset"]
     
 if __name__ == "__main__":
     with open("partition_table.csv","r") as file:

@@ -5,8 +5,11 @@ import espfb_settings as settings
 
 args = sys.argv[1:]
 esptool = settings.ESPTOOL_BIN
-with open("partition_table.csv","r") as file:
-    partitions = fnc.optimize_csv(file.read())
+try:
+    with open("partition_table.csv","r") as file:
+        partitions = fnc.optimize_csv(file.read())
+except:
+    print("partition_table.csv not found, please load partition table via ./espfb use-local-table path/to/partition_table.csv")
 
 def main():
     global args
