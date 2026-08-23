@@ -1,3 +1,4 @@
+import subprocess as sp
 #cli methods
 def read(args:list,esptool,partitions):
     target_partition = args[1]
@@ -5,7 +6,7 @@ def read(args:list,esptool,partitions):
     args.pop(0)
     args.pop(0)
     command_to_run = [esptool,"read-flash",partitions[target_partition]["offset"],partitions[target_partition]["size"],target_binary]
-    print(command_to_run)
+    run(command_to_run)
 #code methods
 def optimize_csv(string:str):
     output = {}
@@ -22,6 +23,11 @@ def ptsize2bytes(string_size:str):
         return hex(size * 1024)
     elif last_symbol == "M":
         return hex(size * 1024 * 1024)
+def run(args:list,shell=True,**kwargs):
+    print(">>",end="")
+    for i in args:print(i,end=' ')
+    print()
+    sp.run(args,shell=shell,**kwargs)
     
 if __name__ == "__main__":
     with open("partition_table.csv","r") as file:

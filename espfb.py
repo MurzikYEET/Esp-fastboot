@@ -1,13 +1,10 @@
-import subprocess as sp
 import sys
 import espfb_methods as fnc
 import espfb_constants as const
-import json
+import espfb_settings as settings
 
-with open("config.json","r+",encoding="utf-8") as cfg_json:
-    cfg = json.load(cfg_json)
 args = sys.argv[1:]
-esptool = cfg["esptool_link"]
+esptool = settings.ESPTOOL_BIN
 with open("partition_table.csv","r") as file:
     partitions = fnc.optimize_csv(file.read())
 
@@ -19,6 +16,7 @@ def main():
     match args[0]:
         case "about":print(const.ABOUT)
         case "read":fnc.read(args,esptool,partitions)
+        case "about_esptool":fnc.run([esptool,"version"])
         case _:print(const.UNKNOW_COMMANDS)
 
 if __name__ == "__main__":

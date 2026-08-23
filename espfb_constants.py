@@ -1,4 +1,3 @@
-#espfb texts
 UNKNOW_COMMANDS = "Unknow command"
 ABOUT = "Esp-fastboot by MurzikYYET (GitHub)\nLicensed under GNU GPLv2\nUses esptool and gen_esp32part by Espressif"
 HELP = """
