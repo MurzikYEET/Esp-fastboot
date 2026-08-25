@@ -1,26 +1,48 @@
 import subprocess as sp
+import os
+import espfb_constants
 #cli methods
-def read(args:list,esptool,partitions):
+def read(args:list,esptool,partitions): #read partition and save it
     target_partition = args[1]
     target_binary = args[2]
-    remove_first_elements(args,3)
+    remove_first_elements(args,3) #remove first args
     command_to_run = [esptool,"read-flash",get_offset(partitions,target_partition),get_size(partitions,target_partition),target_binary]
-    #insert_args(command_to_run,args)
+    insert_args(command_to_run,args)
     run(command_to_run)
 def use_local_table(path2table:str):
     try:
         with open(path2table,"r",encoding="utf-8") as input:
             with open("partition_table.csv","w+",encoding="utf-8") as output:
                 output.write(input.read())
-    finally:
-        print("PASS!")
+    except:
+        print("Partition table ### NOT ### used!")
 def wipe(args:list,esptool,partitions):
     target_offset = get_offset(partitions,args[1])
     target_size = get_size(partitions,args[1])
     remove_first_elements(args,2)
     command_to_run = [esptool,"erase-region",target_offset,target_size]
-    #insert_args(command_to_run,args)
+    insert_args(command_to_run,args)
     run(command_to_run)
+def flash(args:list,esptool,partitions):
+    target_partition = args[1]
+    target_firmware = args[2]
+    target_firmware_size = os.path.getsize(target_firmware)
+    if target_firmware_size > get_size(partitions,target_partition):
+        print(espfb_constants.ABORT_FLASH)
+        return
+    remove_first_elements(args,3)
+    flash_command = [esptool,"write-flash",get_offset(partitions,target_partition),target_firmware]
+    insert_args(flash_command,args)
+    run(flash_command)
+
+    addres_to_erase = int(get_offset(partitions,target_partition),16)+target_firmware_size
+    size_to_erase = int(get_size(partitions,target_partition),16)-target_firmware_size
+    if size_to_erase == 0:
+        print(espfb_constants.BINARY_FILL_ALL)
+        return
+    erase_trash_command = [esptool,"erase-region",hex(addres_to_erase),hex(size_to_erase)]
+    insert_args(erase_trash_command,args)
+    run(erase_trash_command)
 
 #code methods
 def optimize_csv(string:str):
@@ -45,7 +67,10 @@ def run(args:list,shell=True,**kwargs):
     sp.run(args,shell=shell,**kwargs)
 def get_size(part_table,part):return part_table[part]["size"]
 def get_offset(part_table,part):return part_table[part]["offset"]
-def insert_args(list_:list,args):list_.insert(1,args)
+def insert_args(cmd_to_run:list,args:list):
+    args.reverse()
+    for i in args:
+        cmd_to_run.insert(1,i)
 def remove_first_elements(target:list,count = 1):
     for i in range(count):target.pop(0)
 

@@ -9,3 +9,7 @@ use-local-table <path/to/table.csv> : use partition table for defining partition
 use-esp-table : dump esp32 table and use for defining partition
 """
 ERROR = "ERR0R!!!! Error logs : \n"
+PARTABLE_NOT_FOUND = "partition_table.csv not found, please load partition table via ./espfb use-local-table path/to/partition_table.csv"
+COMMAND_NO_READY = "Command not ready, command has been added soon"
+BINARY_FILL_ALL = "Binary file filled entire section, we skip erasure."
+ABORT_FLASH = "Firmware greather big than partition, flashing aborted"

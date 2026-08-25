@@ -9,7 +9,7 @@ try:
     with open("partition_table.csv","r") as file:
         partitions = fnc.optimize_csv(file.read())
 except:
-    print("partition_table.csv not found, please load partition table via ./espfb use-local-table path/to/partition_table.csv")
+    print(const.PARTABLE_NOT_FOUND)
 
 def main():
     global args
@@ -19,18 +19,19 @@ def main():
     match args[0]:
         case "about":print(const.ABOUT)
         case "about-esptool":fnc.run([esptool,"version"])
-        case "flash":pass
+        case "flash":fnc.flash(args,esptool,partitions)
         case "wipe":fnc.wipe(args,esptool,partitions)
         case "read":fnc.read(args,esptool,partitions)
         case "use-local-table":fnc.use_local_table(args[1])
-        case "use-esp-table":print("Command not ready, command has been added soon")
+        case "use-esp-table":print(const.COMMAND_NO_READY)
         #case "esptool-args":fnc.esptool_arguments("set",args[1])
         case _:print(const.UNKNOW_COMMANDS)
 
 if __name__ == "__main__":
-    try:
-        main()
-    except Exception as error:
-        print(const.ERROR,error)
-        sys.exit(1)
+    main()
+    #try:
+    #    main()
+    #except Exception as error:
+    #    print(const.ERROR,error)
+    #    sys.exit(1)
         
