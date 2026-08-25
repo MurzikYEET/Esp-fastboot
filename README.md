@@ -17,7 +17,7 @@ python espfb.py use-local-table path/to/partition_table.csv
 `wipe <partition>` : Erasing partition\
 `read <partition> <path/to/output.bin>` : Reading partition and save it to .bin file\
 `use-local-table <path/to/table.csv>` : Copying ESP-IDF partition table to directory of Esp-fastboot\
-`use-esp-table` : Dumping partition table from connected ESP32 and using her for flashing\
+`use-esp-table` (unfinished, not working) : Dumping partition table from connected ESP32 and using her for flashing
 ## Credits
 [Espressif Systems](https://github.com/espressif) : this company made esptool and ESP32 platform\
 [Python Software Foundation](https://github.com/psf) : made Python laungage
