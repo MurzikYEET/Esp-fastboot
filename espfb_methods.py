@@ -27,22 +27,24 @@ def flash(args:list,esptool,partitions):
     target_partition = args[1]
     target_firmware = args[2]
     target_firmware_size = os.path.getsize(target_firmware)
-    if target_firmware_size > get_size(partitions,target_partition):
+
+    if target_firmware_size > int(get_size(partitions,target_partition),16):
         print(espfb_constants.ABORT_FLASH)
         return
-    remove_first_elements(args,3)
-    flash_command = [esptool,"write-flash",get_offset(partitions,target_partition),target_firmware]
-    insert_args(flash_command,args)
-    run(flash_command)
-
-    addres_to_erase = int(get_offset(partitions,target_partition),16)+target_firmware_size
-    size_to_erase = int(get_size(partitions,target_partition),16)-target_firmware_size
+    
+    addres_to_erase = (int(get_offset(partitions,target_partition),16)+target_firmware_size) & ~4095
+    size_to_erase = ((int(get_size(partitions,target_partition),16)-target_firmware_size) + 4095) & ~4095
     if size_to_erase == 0:
         print(espfb_constants.BINARY_FILL_ALL)
         return
+    remove_first_elements(args,3)
     erase_trash_command = [esptool,"erase-region",hex(addres_to_erase),hex(size_to_erase)]
     insert_args(erase_trash_command,args)
     run(erase_trash_command)
+
+    flash_command = [esptool,"--after","no-reset","write-flash",get_offset(partitions,target_partition),target_firmware]
+    insert_args(flash_command,args)
+    run(flash_command)
 
 #code methods
 def optimize_csv(string:str):
